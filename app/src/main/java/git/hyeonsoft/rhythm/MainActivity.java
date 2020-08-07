@@ -1,17 +1,12 @@
 package git.hyeonsoft.rhythm;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
-import git.hyeonsoft.rhythm.object3d.GameObject3d;
+import git.hyeonsoft.rhythm.object3d.*;
 
 public class MainActivity extends Activity {
 
@@ -22,9 +17,6 @@ public class MainActivity extends Activity {
         mGLView = new MainGLSurfaceView(this);
         hideSystemUI();
         setContentView(mGLView);
-
-        GameObject3d a = new GameObject3d();
-        a.setTransform(2, 3, 4);
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus){

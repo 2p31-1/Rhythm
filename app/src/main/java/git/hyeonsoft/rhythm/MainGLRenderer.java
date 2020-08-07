@@ -5,7 +5,6 @@ import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,7 +13,8 @@ import git.hyeonsoft.rhythm.object3d.*;
 
 public class MainGLRenderer implements GLSurfaceView.Renderer {
 
-    private GameObject mGameObject;
+    private GameObject lane;
+    private GameObject3d lane_end;
     private final float[]mMVPMatrix = new float[16];
     private final float[]mProjectionMatrix = new float[16];
     private final float[]mViewMatrix = new float[16];
@@ -24,13 +24,14 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glClearColor(0.5f, 0.4f, 0.3f, 1);
 
-        mGameObject = new Square(new float[]{
+        lane = new Square(new float[]{
                 -2f,0, -0f,
                 2f, 0, 0,
                 2f, 0, 100,
                 -2f, 0, 100
         },
                 new float[] {0.9f, 0.9f, 0.9f, 1});
+        lane_end = new Cube(new float[]{0, 0.05f, 0}, new float[]{4f, 0.1f, 0.1f}, new float[]{1, 1, 1, 1});
     }
 
     @Override
@@ -45,12 +46,12 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES30.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
         //카메라 위치
         Matrix.setLookAtM(mViewMatrix, 0, 0, 1.5f, -4f, 0, 0,10, 0, 1, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0); //행렬곱 저장
 
-        mGameObject.draw(mMVPMatrix);
+        lane.draw(mMVPMatrix);
+        lane_end.draw(mMVPMatrix);
     }
 
     public static int loadShader(int type, String shaderCode){

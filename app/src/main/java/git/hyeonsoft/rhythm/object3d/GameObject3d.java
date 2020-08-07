@@ -4,18 +4,40 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 public class GameObject3d {
-    protected float[] pos=null;
-    protected float[] size = null;
     protected GameObject[] gameObjects = null;
-    protected float[] transform = new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-    public void setTransform(float x, float y, float z){
+    protected float[] transform;
+    private boolean flagNeedToCalculate = false;
+    public void resetTransform(){
+        transform = new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    }
+    public GameObject3d(){
+        resetTransform();
+    }
+    public GameObject3d(float[] pos, float[] size){
+        resetTransform();
+        doScale(size);
+        doTranslate(pos);
+    }
+    public void doTranslate(float x, float y, float z){
+        //Scale first, Rotate next, translate finally.
         Matrix.translateM(transform, 0, x, y, z);
-        for(int i=0;i<16;i++)
-        Log.i("trans"+i, "setTransform: "+transform[i]);
+    }
+    public void doTranslate(float[] vec){
+        //Scale first, Rotate next, translate finally.
+        Matrix.translateM(transform, 0, vec[0], vec[1], vec[2]);
+    }
+    public void doRotate(float angle, float x, float y, float z){
+        Matrix.rotateM(transform, 0, angle, x, y, z);
+    }
+    public void doScale(float x, float y, float z){
+        Matrix.scaleM(transform, 0, x, y, z);
+    }
+    public void doScale(float[] vec){
+        Matrix.scaleM(transform, 0, vec[0], vec[1], vec[2]);
     }
     public void draw(float[] mvpMatrix){
         for(GameObject x:gameObjects){
-            x.draw(mvpMatrix);
+            x.drawFromObject(mvpMatrix, transform);
         }
     }
 }

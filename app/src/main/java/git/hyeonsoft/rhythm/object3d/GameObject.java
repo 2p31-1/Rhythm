@@ -13,7 +13,7 @@ public class GameObject {
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
     private int mProgram;
-    protected short mDrawOrder[] = {0, 1, 2};
+    protected short[] mDrawOrder = {0, 1, 2};
 
     protected final String vertexShaderCode =
             "#version 300 es\n" +
@@ -97,7 +97,7 @@ public class GameObject {
         vertexBuffer.position(0);
         GLES30.glVertexAttribPointer(0, COORDS_PER_VERTEX, GLES30.GL_FLOAT, false, 0, vertexBuffer);
         GLES30.glUniformMatrix4fv(GLES30.glGetUniformLocation(mProgram, "uMVPMatrix"), 1, false, mvpMatrix, 0);
-        GLES30.glUniformMatrix4fv(GLES30.glGetUniformLocation(mProgram, "transform"), 1, false, transform, 0);
+        GLES30.glUniformMatrix4fv(GLES30.glGetUniformLocation(mProgram, "uTransform"), 1, false, transform, 0);
         GLES30.glUniform4fv(GLES30.glGetUniformLocation(mProgram, "vertexColor"), 1, color, 0);
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, mDrawOrder.length, GLES30.GL_UNSIGNED_SHORT, drawListBuffer);
@@ -108,7 +108,7 @@ public class GameObject {
     }
 
     protected static final int COORDS_PER_VERTEX = 3;
-    protected float coords[];
+    protected float[] coords;
 
-    protected float color [];
+    protected float[] color;
 }
