@@ -1,6 +1,5 @@
 package git.hyeonsoft.rhythm;
 
-import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -9,29 +8,22 @@ import android.util.Log;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import git.hyeonsoft.rhythm.object3d.*;
+import git.hyeonsoft.rhythm.game.*;
 
 public class MainGLRenderer implements GLSurfaceView.Renderer {
 
-    private GameObject lane;
-    private GameObject3d lane_end;
     private final float[]mMVPMatrix = new float[16];
     private final float[]mProjectionMatrix = new float[16];
     private final float[]mViewMatrix = new float[16];
-
+    public GamePlay mGamePlay;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES30.glClearColor(0.5f, 0.4f, 0.3f, 1);
+        GLES30.glEnable(GLES30.GL_BLEND);
+        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
+        GLES30.glBlendFunc(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA);
+        mGamePlay = new GamePlay(this);
 
-        lane = new Square(new float[]{
-                -2f,0, -0f,
-                2f, 0, 0,
-                2f, 0, 100,
-                -2f, 0, 100
-        },
-                new float[] {0.9f, 0.9f, 0.9f, 1});
-        lane_end = new Cube(new float[]{0, 0.05f, 0}, new float[]{4f, 0.1f, 0.1f}, new float[]{1, 1, 1, 1});
     }
 
     @Override
@@ -39,19 +31,29 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
         GLES30.glViewport(0, 0, width, height);
         float ratio = (float) width/height;
         //3차원 공간의 점을 2차원 화면에 보여주기 위한 projection matrix의 정의
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 80);
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 200);
     }
 
-    public float camEyeY, camEyeZ;
+    float cameyeY=0, cameyeZ=0;
     @Override
     public void onDrawFrame(GL10 gl) {
-        GLES30.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT|GLES30.GL_DEPTH_BUFFER_BIT);
         //카메라 위치
         Matrix.setLookAtM(mViewMatrix, 0, 0, 1.5f, -4f, 0, 0,10, 0, 1, 0);
+        //Matrix.setLookAtM(mViewMatrix, 0, 0, 2.637207f, -7.7922363f, 0, 0,10, 0, 1, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0); //행렬곱 저장
+        mGamePlay.draw(mMVPMatrix);
+        Log.i("left ", vec3ToScreenPos(-2, 0, 0)[0]+", right "+vec3ToScreenPos(0, 10, 10)[0]+", "+vec3ToScreenPos(0, 0, 0)[1]+", "+vec3ToScreenPos(0, 0, 10)[2]);
+    }
 
-        lane.draw(mMVPMatrix);
-        lane_end.draw(mMVPMatrix);
+    public float[] vec3ToScreenPos(float x, float y, float z){
+        float[] pos = new float[]{-2, 0.05f, 0, 1};
+        float[] screenPos;
+        screenPos = new float[4];
+        //Matrix.multiplyMV(screenPos, 0, mViewMatrix, 0, pos, 0);
+        Matrix.multiplyMV(screenPos, 0, mMVPMatrix, 0, pos, 0);
+
+        return screenPos;
     }
 
     public static int loadShader(int type, String shaderCode){
@@ -63,7 +65,7 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
 
         GLES30.glCompileShader(shader);
 
-        Log.e("에러", GLES30.glGetShaderInfoLog(shader));
+        //Log.e("에러", GLES30.glGetShaderInfoLog(shader));
 
         return shader;
     }

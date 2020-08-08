@@ -1,12 +1,10 @@
 package git.hyeonsoft.rhythm.object3d;
 
 import android.opengl.Matrix;
-import android.util.Log;
 
 public class GameObject3d {
     protected GameObject[] gameObjects = null;
     protected float[] transform;
-    private boolean flagNeedToCalculate = false;
     public void resetTransform(){
         transform = new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
     }

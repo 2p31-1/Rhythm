@@ -2,7 +2,6 @@ package git.hyeonsoft.rhythm;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class MainGLSurfaceView extends GLSurfaceView {
@@ -24,11 +23,11 @@ public class MainGLSurfaceView extends GLSurfaceView {
     private final float TOUCH_SCALE_FACTOR = 180.0f / 32;
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        float x = e.getX()/getWidth()*4;
-        float y = e.getY()/getHeight()*4-4;
-        //Log.i("터치", ""+x+","+y);
-        mRenderer.camEyeY=x;
-        mRenderer.camEyeZ=y;
+        float x = e.getX()/getWidth();
+        float y = e.getY()/getHeight();
+        mRenderer.mGamePlay.onTouch(x, y);
+        mRenderer.cameyeY = x*8-4;
+        mRenderer.cameyeZ = y*8-8;
         return true;
     }
 }
