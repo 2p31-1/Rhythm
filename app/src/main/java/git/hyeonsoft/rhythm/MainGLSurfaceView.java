@@ -23,11 +23,7 @@ public class MainGLSurfaceView extends GLSurfaceView {
     private final float TOUCH_SCALE_FACTOR = 180.0f / 32;
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        float x = e.getX()/getWidth();
-        float y = e.getY()/getHeight();
-        mRenderer.mGamePlay.onTouch(x, y);
-        mRenderer.cameyeY = x*8-4;
-        mRenderer.cameyeZ = y*8-8;
+        if((e.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN)mRenderer.mGamePlay.touch(e.getX()/getWidth(), e.getY()/getHeight());
         return true;
     }
 }

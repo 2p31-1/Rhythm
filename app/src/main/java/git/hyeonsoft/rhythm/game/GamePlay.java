@@ -27,7 +27,7 @@ public class GamePlay {
     double startTime = 0d;
     double currentTime = 0d;
     double playTime = 0d;
-    float 배속=3f;
+    float 배속=0.25f;
     int 마디 = 1;
     int combo = 0;
     ArrayList<Note> notes;
@@ -166,6 +166,7 @@ public class GamePlay {
                 break;
             }
         }
+        //draw
         for(NoteBar notebar:noteBars){
             notebar.update(deltaTime);
             notebar.draw(mMVPMatrix);
@@ -176,6 +177,11 @@ public class GamePlay {
         }
         lane_end.draw(mMVPMatrix);
         lane.draw(mMVPMatrix);
+        //터치 범위 설정
+        float[] touchPan=MainGLRenderer.vec3ToScreenPos(mMVPMatrix, -LANE_SIZE/2, 0, 0);
+        leftEnd = touchPan[0];
+        rightEnd = -leftEnd;
+        middle = touchPan[1];
     }
 
     boolean AddNoteBar(int madi) {
@@ -186,7 +192,9 @@ public class GamePlay {
         return true;
     }
 
-    public void onTouch(float x, float y){
+    public void touch(float x, float y){
+        if(middle - 0.1<y&&y<middle+0.1&&leftEnd<x&&x<rightEnd){
 
+        }
     }
 }

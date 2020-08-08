@@ -43,16 +43,16 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
         //Matrix.setLookAtM(mViewMatrix, 0, 0, 2.637207f, -7.7922363f, 0, 0,10, 0, 1, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0); //행렬곱 저장
         mGamePlay.draw(mMVPMatrix);
-        Log.i("left ", vec3ToScreenPos(-2, 0, 0)[0]+", right "+vec3ToScreenPos(0, 10, 10)[0]+", "+vec3ToScreenPos(0, 0, 0)[1]+", "+vec3ToScreenPos(0, 0, 10)[2]);
     }
 
-    public float[] vec3ToScreenPos(float x, float y, float z){
-        float[] pos = new float[]{-2, 0.05f, 0, 1};
+    public static float[] vec3ToScreenPos(float[] mMVPMatrix, float x, float y, float z){
+        float[] pos = new float[]{-2f, 0, 0, 1};
         float[] screenPos;
         screenPos = new float[4];
         //Matrix.multiplyMV(screenPos, 0, mViewMatrix, 0, pos, 0);
         Matrix.multiplyMV(screenPos, 0, mMVPMatrix, 0, pos, 0);
-
+        screenPos[0]/=screenPos[3];
+        screenPos[1]/=screenPos[3];//동차좌표 w 위치가 1이 아니므로 w 값으로 나누어준다. (normalize)
         return screenPos;
     }
 
