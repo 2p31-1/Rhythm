@@ -4,6 +4,8 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 import git.hyeonsoft.rhythm.MainGLRenderer;
 import git.hyeonsoft.rhythm.object3d.Cube;
@@ -18,6 +20,7 @@ public class GamePlay {
     public static float LANE_LENGTH = 200f;
     public static float LANE_SIZE = 4f;
 
+    public int combo=0;
     private float nowDist=0;
     private int currentBpmIndex = 0;
     public static float leftEnd;
@@ -29,7 +32,6 @@ public class GamePlay {
     double playTime = 0d;
     float 배속=0.25f;
     int 마디 = 1;
-    int combo = 0;
     ArrayList<Note> notes;
     ArrayList<NoteBar> noteBars;
     Bpms bpmList;
@@ -111,7 +113,7 @@ public class GamePlay {
     {
         float dist = GetNoteDistance(madi, bak, bun)-nowDist;
         if (dist > LANE_LENGTH) return false;
-        notes.add(new Note(GetNoteTime(madi, bak, bun), size*LANE_SIZE, -x * LANE_SIZE, dist));
+        notes.add(new Note(GetNoteTime(madi, bak, bun), size*LANE_SIZE, x, dist));
         return true;
     }
     public void draw(float[] mMVPMatrix){
@@ -160,27 +162,34 @@ public class GamePlay {
         {
             if (notes.get(i).isTimeOver(playTime))
             {
-                notes.remove(i);
-                //GotNote(i);
+                gotNote(i);
             }else{
                 break;
             }
         }
         //draw
-        for(NoteBar notebar:noteBars){
-            notebar.update(deltaTime);
-            notebar.draw(mMVPMatrix);
+        Iterator it = noteBars.iterator();
+        while(it.hasNext()){
+            NoteBar x = (NoteBar)it.next();
+            x.update(deltaTime);
+            x.draw(mMVPMatrix);
         }
-        for(Note note:notes){
-            note.update(deltaTime);
-            note.draw(mMVPMatrix);
+        it = ((ArrayList<Note>)(notes.clone())).iterator();
+        while(it.hasNext()){
+            try {
+                Note x = (Note) it.next();
+                x.update(deltaTime);
+                x.draw(mMVPMatrix);
+            }catch(NullPointerException e){
+
+            }
         }
         lane_end.draw(mMVPMatrix);
         lane.draw(mMVPMatrix);
         //터치 범위 설정
         float[] touchPan=MainGLRenderer.vec3ToScreenPos(mMVPMatrix, -LANE_SIZE/2, 0, 0);
-        leftEnd = touchPan[0];
-        rightEnd = -leftEnd;
+        rightEnd = touchPan[0];
+        leftEnd = -rightEnd;
         middle = touchPan[1];
     }
 
@@ -192,9 +201,40 @@ public class GamePlay {
         return true;
     }
 
-    public void touch(float x, float y){
-        if(middle - 0.1<y&&y<middle+0.1&&leftEnd<x&&x<rightEnd){
+    private void gotNote(int idx){
+        float delTime = (float)Math.abs(notes.get(idx).time - playTime);
+        Log.i("idx"+notes.get(idx).notePosX, ", "+delTime);
+        notes.remove(idx);
+        //Score, combo
+        if (delTime > 0.3) {
+            //bad
+            combo = 0;
+        }else if(delTime>0.05){
+            //near
+            combo++;
+        }else{
+            //perfect
+            combo++;
+        }
+        Log.i("combo", ", "+combo);
+    }
 
+    private void noteTouchHandle(float pos){
+        /*Log.i("touchpos", "n"+pos);*/
+        for(int i=0;i<notes.size();i++){
+            if(playTime - notes.get(i).time < -0.1)break;
+            else if(notes.get(i).notePosX-notes.get(i).noteSize/2<pos&&
+            pos<notes.get(i).notePosX+notes.get(i).noteSize/2){
+                //Log.i("touchpos"+i, ", "+pos);
+                gotNote(i);
+            }
+        }
+    }
+
+    public void touch(float x, float y){
+        //Log.i(middle+", "+ leftEnd, ", "+leftEnd+", "+x);
+        if(middle - 0.5<y&&y<middle+0.5&&leftEnd<x&&x<rightEnd){
+            noteTouchHandle(x/(rightEnd-leftEnd)*2);
         }
     }
 }

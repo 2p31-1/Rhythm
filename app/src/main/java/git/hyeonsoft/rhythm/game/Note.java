@@ -7,8 +7,12 @@ public class Note {
     public float time;
     public static float NoteSpeed;
     GameObject3d m3dObject;
+    public float notePosX;
+    public float noteSize;
     public Note(float time, float noteSize, float notePosX, float distance){
-        m3dObject = new Cube(new float[]{notePosX, 0.06f, distance}, new float[]{noteSize, 0.1f, 0.1f}, new float[]{1f, 1f, 1f, 1f});
+        m3dObject = new Cube(new float[]{-notePosX*GamePlay.LANE_SIZE, 0.06f, distance}, new float[]{noteSize, 0.1f, 0.1f}, new float[]{1f, 1f, 1f, 1f});
+        this.notePosX=2*notePosX;
+        this.noteSize=noteSize;
         this.time = time;
     }
     public void update(float deltaTime){
@@ -19,7 +23,7 @@ public class Note {
     }
     boolean isTimeOver(double currentTime)
     {
-        return currentTime - time > 0.1;
+        return currentTime - time > 0.3;
     }
 }
 

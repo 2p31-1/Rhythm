@@ -2,7 +2,10 @@ package git.hyeonsoft.rhythm;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
+
+import javax.security.auth.login.LoginException;
 
 public class MainGLSurfaceView extends GLSurfaceView {
 
@@ -23,7 +26,13 @@ public class MainGLSurfaceView extends GLSurfaceView {
     private final float TOUCH_SCALE_FACTOR = 180.0f / 32;
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        if((e.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN)mRenderer.mGamePlay.touch(e.getX()/getWidth(), e.getY()/getHeight());
+        //Log.i(e.getActionMasked()+"as", ""+(e.getX()/getWidth()*2-1)+", "+(-e.getY()/getHeight()*2+1));
+        switch(e.getActionMasked()){
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                mRenderer.mGamePlay.touch(e.getX(e.getPointerCount()-1)/getWidth()*2-1, -e.getY(e.getPointerCount()-1)/getHeight()*2+1);
+                break;
+        }
         return true;
     }
 }
