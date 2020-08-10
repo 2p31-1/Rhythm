@@ -10,12 +10,12 @@ import java.nio.ShortBuffer;
 import git.hyeonsoft.rhythm.*;
 
 public class GameObject {
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
-    private int mProgram;
+    protected FloatBuffer vertexBuffer;
+    protected ShortBuffer drawListBuffer;
+    protected int mProgram;
     protected short[] mDrawOrder = {0, 1, 2};
 
-    protected final String vertexShaderCode =
+    protected String vertexShaderCode =
             "#version 300 es\n" +
                     "uniform mat4 uMVPMatrix;" +
                     "uniform mat4 uTransform;"+
@@ -25,7 +25,7 @@ public class GameObject {
                     " gl_Position = uMVPMatrix * uTransform * vec4(aPos, 1.0);" +
                     "}";
 
-    protected final String fragmentShaderCode =
+    protected String fragmentShaderCode =
             "#version 300 es\n" +
                     "precision mediump float;" +
                     "uniform vec4 vertexColor;" +
@@ -41,7 +41,6 @@ public class GameObject {
     }
 
     public void buildCode(){
-        vertexCount = coords.length/COORDS_PER_VERTEX;
 
         int vertexShader = MainGLRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
 
@@ -70,8 +69,6 @@ public class GameObject {
 
 
 
-    protected int vertexCount;
-
     public void draw(float[] mvpMatrix){
         GLES30.glUseProgram(mProgram);
 
@@ -86,8 +83,6 @@ public class GameObject {
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, mDrawOrder.length, GLES30.GL_UNSIGNED_SHORT, drawListBuffer);
 
         GLES30.glDisableVertexAttribArray(0);
-
-        GLES30.glGetProgramInfoLog(mProgram);
     }
 
     public void drawFromObject(float[] mvpMatrix, float[] transform){

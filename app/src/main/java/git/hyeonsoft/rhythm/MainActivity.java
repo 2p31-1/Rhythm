@@ -2,18 +2,20 @@ package git.hyeonsoft.rhythm;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
 
-import git.hyeonsoft.rhythm.object3d.*;
-
 public class MainActivity extends Activity {
+
+    public static Resources resources;
 
     private GLSurfaceView mGLView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        resources = getResources();
         mGLView = new MainGLSurfaceView(this);
         hideSystemUI();
         setContentView(mGLView);

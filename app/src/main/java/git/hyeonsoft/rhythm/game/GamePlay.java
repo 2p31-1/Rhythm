@@ -1,5 +1,6 @@
 package git.hyeonsoft.rhythm.game;
 
+import android.graphics.BitmapFactory;
 import android.opengl.GLES30;
 import android.util.Log;
 
@@ -7,11 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import git.hyeonsoft.rhythm.MainActivity;
 import git.hyeonsoft.rhythm.MainGLRenderer;
+import git.hyeonsoft.rhythm.R;
 import git.hyeonsoft.rhythm.object3d.Cube;
 import git.hyeonsoft.rhythm.object3d.GameObject;
 import git.hyeonsoft.rhythm.object3d.GameObject3d;
 import git.hyeonsoft.rhythm.object3d.Square;
+import git.hyeonsoft.rhythm.object3d.UISquareTexture;
 
 public class GamePlay {
     private GameObject lane;
@@ -40,6 +44,8 @@ public class GamePlay {
     public GameObject noteBarGameObject;
     private MainGLRenderer renderer;
 
+    public UISquareTexture ui;
+
     public GamePlay(MainGLRenderer renderer){
         GLES30.glClearColor(0.5f, 0.4f, 0.3f, 1);
         //바닥
@@ -53,6 +59,7 @@ public class GamePlay {
         lane_end = new Cube(new float[]{0, 0.05f, 0}, new float[]{LANE_SIZE, 0.1f, 0.1f}, new float[]{0.7f, 0.7f, 0.7f, 1f});
 
         this.renderer = renderer;
+
 
 
         bpmList = new Bpms();
@@ -71,6 +78,9 @@ public class GamePlay {
         AddNote(-0.1f, 0.2f, 4, 1, 4);
         AddNote(-0.1f, 0.2f, 4, 2, 4);
         AddNote(-0.1f, 0.2f, 4, 3, 4);
+
+
+        ui = new UISquareTexture(new float[]{0, 0, 0}, new float[]{1, 1, 1}, new float[]{1, 1, 1, 1}, BitmapFactory.decodeResource(MainActivity.resources, R.drawable.combo));
     }
 
     float GetNoteDistance(int 마디, int 박, int 분)
@@ -191,6 +201,8 @@ public class GamePlay {
         rightEnd = touchPan[0];
         leftEnd = -rightEnd;
         middle = touchPan[1];
+
+        ui.draw(mMVPMatrix);
     }
 
     boolean AddNoteBar(int madi) {
@@ -203,7 +215,7 @@ public class GamePlay {
 
     private void gotNote(int idx){
         float delTime = (float)Math.abs(notes.get(idx).time - playTime);
-        Log.i("idx"+notes.get(idx).notePosX, ", "+delTime);
+        //Log.i("idx"+notes.get(idx).notePosX, ", "+delTime);
         notes.remove(idx);
         //Score, combo
         if (delTime > 0.3) {
@@ -216,7 +228,7 @@ public class GamePlay {
             //perfect
             combo++;
         }
-        Log.i("combo", ", "+combo);
+        //Log.i("combo", ", "+combo);
     }
 
     private void noteTouchHandle(float pos){

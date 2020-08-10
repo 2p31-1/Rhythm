@@ -16,7 +16,7 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
     private final float[]mProjectionMatrix = new float[16];
     private final float[]mViewMatrix = new float[16];
     public GamePlay mGamePlay;
-
+    public static float ratio;
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glEnable(GLES30.GL_BLEND);
@@ -29,7 +29,7 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES30.glViewport(0, 0, width, height);
-        float ratio = (float) width/height;
+        ratio = (float) width/height;
         //3차원 공간의 점을 2차원 화면에 보여주기 위한 projection matrix의 정의
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 200);
     }
@@ -65,7 +65,8 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
 
         GLES30.glCompileShader(shader);
 
-        //Log.e("에러", GLES30.glGetShaderInfoLog(shader));
+        Log.e("에러", GLES30.glGetShaderInfoLog(shader));
+        Log.i("코드", shaderCode);
 
         return shader;
     }
