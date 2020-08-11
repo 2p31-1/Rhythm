@@ -33,34 +33,31 @@ public class UISquareTexture extends GameObject{
                 "void main()" +
                 "{" +
                 "    gl_Position = mTransform * vec4(inPos.xy, 0, 1);" +
-                "    TexCoord = aTexCoord;" +
+                "    TexCoord = inPos.xy;" +
                 "}";
         fragmentShaderCode = "#version 300 es\n" +
                 "precision mediump float;" +
-               // "uniform sampler2D ourTexture;" +
+                "uniform sampler2D ourTexture;" +
                 "in vec2 TexCoord;" +
                 "uniform vec4 ourColor;" +
                 "out vec4 color;" +
                 "void main()" +
                 "{" +
-                "    " +//color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);
+                "    color = texture(ourTexture, TexCoord)* ourColor;" +
+                "    color = vec4(TexCoord.xy, 1, 1);" +
                 "    color = ourColor;" +
                 "}";
-        GLES30.glGenTextures(1, textures, 0);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
-        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
         this.coords = new float[]{
-                0.5f,  0.5f,     // 우측 상단
-                0.5f, -0.5f,     // 우측 하단
-                -0.5f, -0.5f,    // 좌측 하단
-                -0.5f,  0.5f,    // 좌측 상단
+                -0.5f, -0.5f,  //bottom left
+                0.5f, -0.5f,  //bottom right
+                0.5f,  0.5f,  // top right
+                -0.5f,  0.5f, // top left
         };
         this.texture = new float[]{
-                1.0f, 0.0f,   // 우측 상단
-                1.0f, 1.0f,   // 우측 하단
-                0.0f, 1.0f,   // 좌측 하단
-                0.0f, 0.0f    // 좌측 상단
+                0f,1f,
+                1f,1f,
+                1f,0f,
+                0f,0f
         };
 
         this.pos = pos;
@@ -153,20 +150,21 @@ public class UISquareTexture extends GameObject{
         GLES30.glLinkProgram(mProgram);
     }
 
-    @Override
-    public void draw(float[] mvpMatrix) {
+    public void draw() {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textures[0]);
 
 
         GLES30.glEnableVertexAttribArray(0);
         GLES30.glEnableVertexAttribArray(1);
         vertexBuffer.position(0);
+        textureBuffer.position(0);
+
         GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer);
         GLES30.glVertexAttribPointer(1, 2, GLES30.GL_FLOAT, false, 0, textureBuffer);
 
         float[] mMatrix = new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
         Matrix.scaleM(mMatrix, 0, size[0]/ MainGLRenderer.ratio, size[1], 0);
-        Log.e("dr", "draw: "+MainGLRenderer.ratio);
+        //Log.e("dr", "draw: "+MainGLRenderer.ratio);
         Matrix.translateM(mMatrix, 0, pos[0], pos[1], 0);
 
 
@@ -174,11 +172,17 @@ public class UISquareTexture extends GameObject{
 
         GLES30.glUniform4fv(GLES30.glGetUniformLocation(mProgram, "ourColor"), 1, color, 0);
 
-       // GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, BitmapFactory.decodeResource(MainActivity.resources, R.drawable.combo), 0);
+
+        GLES30.glGenTextures(1, textures, 0);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, BitmapFactory.decodeResource(MainActivity.resources, R.drawable.combo), 0);
+        //GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, mDrawOrder.length, GLES30.GL_UNSIGNED_SHORT, drawListBuffer);
 
         GLES30.glDisableVertexAttribArray(0);
+        GLES30.glDisableVertexAttribArray(1);
 
     }
 }

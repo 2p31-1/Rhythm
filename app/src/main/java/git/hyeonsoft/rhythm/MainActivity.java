@@ -12,7 +12,7 @@ public class MainActivity extends Activity {
     public static Resources resources;
 
     private GLSurfaceView mGLView;
-    @Override
+    @Override   
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         resources = getResources();

@@ -21,7 +21,7 @@ public class GameObject {
                     "uniform mat4 uTransform;"+
                     "layout (location=0) in vec3 aPos;" +
                     "void main(){" +
-                    " gl_Position = uMVPMatrix * uTransform * vec4(aPos, 1.0);" +
+                    " gl_Position = uMVPMatrix * uTransform * vec4(aPos, 1.0);" +//uMVPMatrix *
                     "}";
 
     protected String fragmentShaderCode =
