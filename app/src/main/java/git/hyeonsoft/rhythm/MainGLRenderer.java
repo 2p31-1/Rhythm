@@ -12,7 +12,7 @@ import git.hyeonsoft.rhythm.game.*;
 
 public class MainGLRenderer implements GLSurfaceView.Renderer {
 
-    private final float[]mMVPMatrix = new float[16];
+    private float[]mMVPMatrix = new float[16];
     private final float[]mProjectionMatrix = new float[16];
     private final float[]mViewMatrix = new float[16];
     public GamePlay mGamePlay;
@@ -42,6 +42,7 @@ public class MainGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, 0, 1.5f, -4f, 0, 0,10, 0, 1, 0);
         //Matrix.setLookAtM(mViewMatrix, 0, 0, 2.637207f, -7.7922363f, 0, 0,10, 0, 1, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0); //행렬곱 저장
+        //mMVPMatrix = new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
         mGamePlay.draw(mMVPMatrix);
     }
 

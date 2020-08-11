@@ -80,7 +80,7 @@ public class GamePlay {
         AddNote(-0.1f, 0.2f, 4, 3, 4);
 
 
-        ui = new UISquareTexture(new float[]{0, 0, 0}, new float[]{1, 1, 1}, new float[]{1, 1, 1, 1}, BitmapFactory.decodeResource(MainActivity.resources, R.drawable.combo));
+        ui = new UISquareTexture(new float[]{0, 0, 0}, new float[]{0.5f, 0.3f, 1}, new float[]{1, 1, 1, 1}, BitmapFactory.decodeResource(MainActivity.resources, R.drawable.combo));
     }
 
     float GetNoteDistance(int 마디, int 박, int 분)
@@ -202,7 +202,7 @@ public class GamePlay {
         leftEnd = -rightEnd;
         middle = touchPan[1];
 
-        ui.draw(mMVPMatrix);
+        ui.draw(new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1});
     }
 
     boolean AddNoteBar(int madi) {
