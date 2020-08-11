@@ -28,26 +28,23 @@ public class UISquareTexture extends GameObject{
                 "layout (location = 1) in vec2 aTexCoord;" +
                 "" +
                 "out vec2 TexCoord;" +
-                "out vec4 Ccolor;" +
                 "uniform mat4 mTransform;" +
-                "uniform vec4 ourColor;" +
                 "" +
                 "void main()" +
                 "{" +
                 "    gl_Position = mTransform * vec4(inPos.xy, 0, 1);" +
-                "    Ccolor=outColor;" +
                 "    TexCoord = aTexCoord;" +
                 "}";
         fragmentShaderCode = "#version 300 es\n" +
                 "precision mediump float;" +
                // "uniform sampler2D ourTexture;" +
                 "in vec2 TexCoord;" +
-                "in vec4 Ccolor;" +
+                "uniform vec4 ourColor;" +
                 "out vec4 color;" +
                 "void main()" +
                 "{" +
                 "    " +//color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);
-                "    color = CColor;" +
+                "    color = ourColor;" +
                 "}";
         GLES30.glGenTextures(1, textures, 0);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
